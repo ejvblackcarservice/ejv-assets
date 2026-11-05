@@ -1,9 +1,28 @@
-/* EJV — Meet & Greet add-on (+$50) for the website quoter. Loaded by a one-line <script src> tag appended to the GoDaddy embed (the embed field is at its size limit). Source of truth: ~/workspace/ejv-quoter/meetgreet.js — keep this GitHub copy in sync. */
+/* EJV — quoter patches loaded by a one-line <script src> tag appended to the GoDaddy embed (the embed field is at its size limit): (0) hours-note wording fix, (1-4) Meet & Greet add-on (+$50). Source of truth: ~/workspace/ejv-quoter/meetgreet.js — keep this GitHub copy in sync. */
 (function(){
   if (window.__ejvMG) return; window.__ejvMG = true;
   var FEE = 50;
   function $(id){ return document.getElementById(id); }
   function money(n){ return '$' + Number(n).toFixed(2); }
+
+  /* 0) Hours note fix: the /contact quoter copy still ends the rush line with "— 24/7."
+        EJV trips run 5 AM – midnight daily (only online booking is 24/7). Rewrite that
+        trailing text node to match the Home copy. Text-node level, idempotent. */
+  function fixHoursNote(){
+    var ps = document.querySelectorAll('p.note');
+    for (var i = 0; i < ps.length; i++){
+      var p = ps[i];
+      if (p.textContent.indexOf('In a rush') === -1) continue;
+      for (var j = 0; j < p.childNodes.length; j++){
+        var n = p.childNodes[j];
+        if (n.nodeType === 3 && n.textContent.indexOf('24/7') !== -1){
+          n.textContent = n.textContent.replace(/\s*—\s*24\/7\.?/, ', 5 AM \u2013 midnight daily.');
+        }
+      }
+    }
+  }
+  fixHoursNote();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fixHoursNote);
 
   /* 1) Checkbox injected right after the Child car seat label */
   var seat = $('carseat');
