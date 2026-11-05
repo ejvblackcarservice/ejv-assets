@@ -7,22 +7,48 @@
 
   /* 0) Hours note fix: the /contact quoter copy still ends the rush line with "— 24/7."
         EJV trips run 5 AM – midnight daily (only online booking is 24/7). Rewrite that
-        trailing text node to match the Home copy. Text-node level, idempotent. */
+        text to match the Home copy. The embed may render/re-render late, so search by
+        text (TreeWalker over all text nodes, not just p.note) and keep retrying via a
+        MutationObserver until the patch lands; idempotent and self-stopping. */
   function fixHoursNote(){
-    var ps = document.querySelectorAll('p.note');
-    for (var i = 0; i < ps.length; i++){
-      var p = ps[i];
-      if (p.textContent.indexOf('In a rush') === -1) continue;
-      for (var j = 0; j < p.childNodes.length; j++){
-        var n = p.childNodes[j];
-        if (n.nodeType === 3 && n.textContent.indexOf('24/7') !== -1){
-          n.textContent = n.textContent.replace(/\s*—\s*24\/7\.?/, ', 5 AM \u2013 midnight daily.');
+    var done = false;
+    try {
+      var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      var n;
+      while ((n = walker.nextNode())){
+        if (n.textContent.indexOf('24/7') === -1) continue;
+        var p = n.parentElement;
+        var inRush = false;
+        while (p && p !== document.body){
+          if (p.textContent && p.textContent.indexOf('In a rush') !== -1){ inRush = true; break; }
+          p = p.parentElement;
         }
+        if (!inRush) continue;
+        n.textContent = n.textContent.replace(/\s*—\s*24\/7\.?/g, ', 5 AM \u2013 midnight daily.');
+        if (n.textContent.indexOf('24/7') === -1) done = true;
       }
+    } catch(e){}
+    return done;
+  }
+  var hnObs = null, hnTries = 0;
+  function hnAttempt(){
+    hnTries++;
+    if (fixHoursNote() || hnTries > 60){
+      if (hnObs) hnObs.disconnect();
+      return true;
+    }
+    return false;
+  }
+  function hnStart(){
+    if (hnAttempt()) return;
+    if (document.body && window.MutationObserver){
+      hnObs = new MutationObserver(function(){ hnAttempt(); });
+      hnObs.observe(document.body, { childList: true, subtree: true, characterData: true });
+      setTimeout(function(){ if (hnObs) hnObs.disconnect(); }, 15000);
     }
   }
-  fixHoursNote();
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fixHoursNote);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hnStart);
+  else hnStart();
 
   /* 1) Checkbox injected right after the Child car seat label */
   var seat = $('carseat');
