@@ -1,0 +1,1 @@
+var _gb=document.getElementById('goBtn');if(_gb)_gb.addEventListener('click',function(){window.__EJV_LEGS=[];},true);setInterval(function(){var q=window.EJV_QUOTE,L=window.__EJV_LEGS;if(q&&L)q.legs=q.tipo==='hourly'?[]:L;},500);
