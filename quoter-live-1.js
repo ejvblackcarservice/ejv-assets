@@ -2,9 +2,10 @@
 var EJV_KEY = 'AIzaSyD6GvwTNTBAiJAzeBodR_34EyAJ57NIJew';
 var RATES = {
   suv:       {name:'2025 SUV Premier',          base:20, mile:2.75, minute:1.95, minimum:60, hourly:100, hourlyMin:3},
-  sedan:     {name:'Comfort Sedan',              base:20, mile:2.00, minute:1.95, minimum:60, hourly:70,  hourlyMin:2},
-  xl:        {name:'XL Económico',          base:30, mile:2.00, minute:1.60, minimum:60, hourly:75, hourlyMin:3},
-  wheelchair:{name:'Wheelchair Accessible Van', base:30, mile:2.00, minute:1.60, minimum:60, hourly:70,  hourlyMin:3}
+  sedan:     {name:'Luxury Sedan',              base:20, mile:2.00, minute:1.95, minimum:60, hourly:70,  hourlyMin:2},
+  xl:        {name:'XL Económico',          base:25, mile:2.00, minute:1.60, minimum:60, hourly:75, hourlyMin:3},
+  economy:  {name:'Economy Sedan',  base:10, mile:2.00, minute:1.60, minimum:60, hourly:65, hourlyMin:2},
+  wheelchair:{name:'Wheelchair Accessible Van', base:25, mile:2.00, minute:1.60, minimum:60, hourly:75,  hourlyMin:3}
 };
 var mode = 'p2p';
 var places = {pickup:null, dropoff:null};
