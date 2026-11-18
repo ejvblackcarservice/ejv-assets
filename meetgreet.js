@@ -1,54 +1,11 @@
-/* EJV — quoter patches loaded by a one-line <script src> tag appended to the GoDaddy embed (the embed field is at its size limit): (0) hours-note wording fix, (1-4) Meet & Greet add-on (+$50), (5) optional driver tip at checkout (12/18/20%, 12% preselected — added 2026-11-11). Source of truth: ~/workspace/ejv-quoter/meetgreet.js — keep this GitHub copy in sync. */
+/* EJV — quoter patches loaded by a one-line <script src> tag appended to the GoDaddy embed (the embed field is at its size limit): (1-4) Meet & Greet add-on (+$50), (5) optional driver tip at checkout (12/18/20%, 12% preselected — added 2026-11-11). Source of truth: ~/workspace/ejv-quoter/meetgreet.js — keep this GitHub copy in sync. */
 (function(){
   if (window.__ejvMG) return; window.__ejvMG = true;
   var FEE = 50;
   function $(id){ return document.getElementById(id); }
   function money(n){ return '$' + Number(n).toFixed(2); }
 
-  /* 0) Hours note fix: the /contact quoter copy still ends the rush line with "— 24/7."
-        EJV trips run 5 AM – midnight daily (only online booking is 24/7). Rewrite that
-        text to match the Home copy. The embed may render/re-render late, so search by
-        text (TreeWalker over all text nodes, not just p.note) and keep retrying via a
-        MutationObserver until the patch lands; idempotent and self-stopping. */
-  function fixHoursNote(){
-    var done = false;
-    try {
-      var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-      var n;
-      while ((n = walker.nextNode())){
-        if (n.textContent.indexOf('24/7') === -1) continue;
-        var p = n.parentElement;
-        var inRush = false;
-        while (p && p !== document.body){
-          if (p.textContent && p.textContent.indexOf('In a rush') !== -1){ inRush = true; break; }
-          p = p.parentElement;
-        }
-        if (!inRush) continue;
-        n.textContent = n.textContent.replace(/\s*—\s*24\/7\.?/g, ', 5 AM \u2013 midnight daily.');
-        if (n.textContent.indexOf('24/7') === -1) done = true;
-      }
-    } catch(e){}
-    return done;
-  }
-  var hnObs = null, hnTries = 0;
-  function hnAttempt(){
-    hnTries++;
-    if (fixHoursNote() || hnTries > 60){
-      if (hnObs) hnObs.disconnect();
-      return true;
-    }
-    return false;
-  }
-  function hnStart(){
-    if (hnAttempt()) return;
-    if (document.body && window.MutationObserver){
-      hnObs = new MutationObserver(function(){ hnAttempt(); });
-      hnObs.observe(document.body, { childList: true, subtree: true, characterData: true });
-      setTimeout(function(){ if (hnObs) hnObs.disconnect(); }, 15000);
-    }
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hnStart);
-  else hnStart();
+  /* 0) REMOVED 2026-11-18: the old hours-note rewrite was deleted when EJV switched to 24/7 service by advance reservation. Do NOT re-add. */
 
   /* 1) Checkbox injected right after the Child car seat label */
   var seat = $('carseat');
