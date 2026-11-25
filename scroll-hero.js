@@ -1,7 +1,7 @@
 (function(){
 var sec=document.getElementById('ejvScroll');
 if(!sec)return;
-function breakout(){var w=document.documentElement.clientWidth;sec.style.width=w+'px';sec.style.maxWidth=w+'px';sec.style.marginLeft='0px';var l1=sec.getBoundingClientRect().left;sec.style.marginLeft=(-l1)+'px';var l2=sec.getBoundingClientRect().left;if(l2){sec.style.marginLeft=(-l1-l2)+'px';}}
+function breakout(){var w=document.documentElement.clientWidth;sec.style.width=w+'px';sec.style.maxWidth=w+'px';sec.style.marginLeft='0px';sec.style.left='0px';var l1=sec.getBoundingClientRect().left;sec.style.left=(-l1)+'px';var l2=sec.getBoundingClientRect().left;if(l2){sec.style.left=(-l1-l2)+'px';}}
 breakout();
 var N=60,BASE='https://ejvblackcarservice.com/wp-content/uploads/2026/11/scroll-',cv=document.getElementById('ejvCv'),ctx=cv.getContext('2d');
 var imgs=[],loaded=[],nLoaded=0,i,im;
