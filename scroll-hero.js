@@ -1,7 +1,7 @@
 (function(){
 var sec=document.getElementById('ejvScroll');
 if(!sec)return;
-function breakout(){sec.style.width='100vw';sec.style.maxWidth='100vw';sec.style.marginLeft='0px';sec.style.marginLeft=(-sec.getBoundingClientRect().left)+'px';}
+function breakout(){var w=document.documentElement.clientWidth;sec.style.width=w+'px';sec.style.maxWidth=w+'px';sec.style.marginLeft='0px';var l1=sec.getBoundingClientRect().left;sec.style.marginLeft=(-l1)+'px';var l2=sec.getBoundingClientRect().left;if(l2){sec.style.marginLeft=(-l1-l2)+'px';}}
 breakout();
 var N=60,BASE='https://ejvblackcarservice.com/wp-content/uploads/2026/11/scroll-',cv=document.getElementById('ejvCv'),ctx=cv.getContext('2d');
 var imgs=[],loaded=[],nLoaded=0,i,im;
@@ -18,7 +18,7 @@ ctx.drawImage(img,dx,dy,dw,dh);}
 function size(){breakout();var st=sec.querySelector('.ejv-stage');cv.width=st.clientWidth;cv.height=st.clientHeight;}
 function setMsgs(p){var ranges=[[0.0,0.24],[0.30,0.54],[0.58,0.80]];msgs.forEach(function(m,i){var r=ranges[i];var o=0;if(p>r[0]&&p<r[1]){o=Math.min(1,(p-r[0])/0.05,(r[1]-p)/0.05);}m.style.opacity=o;});var fo=p>0.84?Math.min(1,(p-0.84)/0.06):0;fin.style.opacity=fo;fin.style.pointerEvents=fo>0.5?'auto':'none';hint.style.opacity=p<0.04?1:0;}
 function loop(){var p=prog();var tgt=p*(N-1);cur+=(tgt-cur)*0.12;if(Math.abs(tgt-cur)<0.02)cur=tgt;draw(Math.round(cur));setMsgs(p);requestAnimationFrame(loop);}
-size();window.addEventListener('resize',size);
+size();window.addEventListener('resize',size);window.addEventListener('load',function(){breakout();size();});setTimeout(function(){breakout();size();},600);
 if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){sec.style.height='100vh';var w=setInterval(function(){if(loaded[N-1]){draw(N-1);fin.style.opacity=1;fin.style.pointerEvents='auto';hint.style.opacity=0;clearInterval(w);}},200);}
 else{requestAnimationFrame(loop);}
 setTimeout(function(){if(nLoaded===0){sec.style.height='100vh';fin.style.opacity=1;fin.style.pointerEvents='auto';hint.style.opacity=0;}},6000);
