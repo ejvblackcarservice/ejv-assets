@@ -1,8 +1,8 @@
 (function(){
 var sec=document.getElementById('ejvScroll');
 if(!sec)return;
-sec.style.width='100vw';
-sec.style.marginLeft='calc(50% - 50vw)';
+function breakout(){sec.style.width='100vw';sec.style.maxWidth='100vw';sec.style.marginLeft='0px';sec.style.marginLeft=(-sec.getBoundingClientRect().left)+'px';}
+breakout();
 var N=60,BASE='https://ejvblackcarservice.com/wp-content/uploads/2026/11/scroll-',cv=document.getElementById('ejvCv'),ctx=cv.getContext('2d');
 var imgs=[],loaded=[],nLoaded=0,i,im;
 for(i=0;i<N;i++){loaded[i]=0;im=new Image();(function(k,img){img.onload=function(){loaded[k]=1;nLoaded++;};})(i,im);im.src=BASE+String(i+1).padStart(3,'0')+'.jpg';imgs[i]=im;}
@@ -15,7 +15,7 @@ var dw,dh,dx,dy;
 if(W/H>=1){var s=Math.max(W/iw,H/ih);dw=iw*s;dh=ih*s;dx=(W-dw)/2;dy=(H-dh)/2;}
 else{dw=W;dh=W/(iw/ih);dx=0;dy=H*0.07;}
 ctx.drawImage(img,dx,dy,dw,dh);}
-function size(){var st=sec.querySelector('.ejv-stage');cv.width=st.clientWidth;cv.height=st.clientHeight;}
+function size(){breakout();var st=sec.querySelector('.ejv-stage');cv.width=st.clientWidth;cv.height=st.clientHeight;}
 function setMsgs(p){var ranges=[[0.0,0.24],[0.30,0.54],[0.58,0.80]];msgs.forEach(function(m,i){var r=ranges[i];var o=0;if(p>r[0]&&p<r[1]){o=Math.min(1,(p-r[0])/0.05,(r[1]-p)/0.05);}m.style.opacity=o;});var fo=p>0.84?Math.min(1,(p-0.84)/0.06):0;fin.style.opacity=fo;fin.style.pointerEvents=fo>0.5?'auto':'none';hint.style.opacity=p<0.04?1:0;}
 function loop(){var p=prog();var tgt=p*(N-1);cur+=(tgt-cur)*0.12;if(Math.abs(tgt-cur)<0.02)cur=tgt;draw(Math.round(cur));setMsgs(p);requestAnimationFrame(loop);}
 size();window.addEventListener('resize',size);
